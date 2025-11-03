@@ -102,46 +102,80 @@ public class DatabaseManager
 {
     private WorkerDatabase _workerDb;
     private DepartmentDatabase _departmentDb;
+    // Id der tildeles den næste medarbejder der skal tilføjes, starter ved 1
     private uint _counter;
-
+    
+    // Constructor, sætter det hele op
     public DatabaseManager()
     {
         _workerDb = new WorkerDatabase();
         _departmentDb = new DepartmentDatabase();
         _counter = 1;
     }
-
+    
+    // Returnerer arbejderen med det efterspurgte id
+    public Worker GetWorker(uint id)
+    {
+        return _workerDb[id];
+    }
+    
+    // Tilføj en medarbejder
     public void AddWorker(Worker worker)
     {
-        // Insert in worker database
+        // |- TILFØJ TIL MEDARBEJDERDATABASEN
+        // Sæt 
         _workerDb[_counter] = worker;
         worker.Id = _counter;
-        // Update department database
+        // TILFØJ TIL MEDARBEJDERDATABASEN -|
+        
+        // |- TILFØJ TIL AFDELINGSDATABASEN
+        // Find afdelingen medarbejderen arbejder i
         Department department = worker.Department;
+        // Hvis afdelingen i afdelingsdatabasen ikke har en liste,
+        // så tilføj en tom liste til den afdeling
         if (!_departmentDb.ContainsKey(department))
         {
             _departmentDb[department] = new WorkerList();
         }
-
+        // Tilføj medarbejderen til listen
         _departmentDb[department].Add(worker);
-        // Update counter
-        _counter += 1;
+        // TILFØJ TIL AFDELINGSDATABASEN -|
+        
+        // Opdater id-tælleren.
+        _counter++;
     }
     
-    // TODO: Finish this!
-    public void RemoveWorker(uint id)
+    // Fjern en medarbejder med id
+    public Worker RemoveWorker(uint id)
     {
-        // Remove from worker database
+        // Find afdelingen medarbejderen med id'en 'id' arbejder i
         Department department = _workerDb[id].Department;
+        
+        // |- FJERN FRA MEDARBEJDERDATABASEN
         _workerDb.Remove(id);
-        // Remove from department data
-        int index = _departmentDb[department].FindIndex(worker => worker.Id == id);
-        _departmentDb[department].RemoveAt(index);
-    }
+        // FJERN FRA MEDARBEJDERDATABASEN -|
+        
+        // |- FJERN FRA AFDELINGSDATABASEN
+        // Find listen over medarbejdere i afdelingen 'department'
+        WorkerList departmentList = _departmentDb[department];
+        // Find det index i departmentList der har id 'id'
+        int index = departmentList.FindIndex(worker => worker.Id == id);
+        // Fjern medarbejderen på index 'index'
+        Worker worker = departmentList[index];
+        departmentList.RemoveAt(index);
+        // FJERN FRA AFDELINGSDATABASEN -|
 
+        return worker;
+    }
+    
     public string WorkerDatabaseString()
     {
         return _workerDb.ToString();
+    }
+    
+    public string DepartmentDatabaseString()
+    {
+        return _departmentDb.ToString();
     }
     
     public override string ToString()
