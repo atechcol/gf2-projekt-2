@@ -1,3 +1,5 @@
+using System.Net;
+
 namespace Projekt2;
 
 public class Worker
@@ -6,6 +8,7 @@ public class Worker
     public string LastName { get; init; }
     public Department Department { get; init; }
     
+    // public IPAddress IpAddress { get; set; }
     public uint Id { get; set; }
     
     public string FullName => $"{FirstName} {LastName}";
