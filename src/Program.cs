@@ -1,4 +1,5 @@
-﻿using System.Runtime.CompilerServices;
+﻿using System.Net;
+using System.Runtime.CompilerServices;
 using Projekt2;
 
 internal class Program
@@ -55,7 +56,7 @@ internal class Program
         // BEREGN AFDELING -|
         
         // Lav medarbejderen og tilføj den til databasen
-        Worker worker = new Worker(firstName, lastName, department);
+        Worker worker = new Worker(firstName, lastName, department, IPAddress.None);
         manager.AddWorker(worker);
         
         Console.WriteLine($"Tilføjede {worker.FullName} til {worker.Department}.");
@@ -127,7 +128,13 @@ internal class Program
                     RemoveWorker();
                     break;
                 case "3":
-                    Console.WriteLine(manager);
+                    if (manager.DepartmentDatabaseIsEmpty())
+                    {
+                        Console.WriteLine("Ingen indkodninger!");
+                        break;
+                    }
+                    Console.WriteLine("\n");
+                    Console.WriteLine(manager.DepartmentDatabaseString());
                     break;
                 case "4":
                     Console.WriteLine("Lukker ned.");

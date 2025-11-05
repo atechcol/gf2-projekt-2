@@ -103,14 +103,24 @@ public class DatabaseManager
     private WorkerDatabase _workerDb;
     private DepartmentDatabase _departmentDb;
     // Id der tildeles den næste medarbejder der skal tilføjes, starter ved 1
-    private uint _counter;
+    private uint _nextid;
     
     // Constructor, sætter det hele op
     public DatabaseManager()
     {
         _workerDb = new WorkerDatabase();
         _departmentDb = new DepartmentDatabase();
-        _counter = 1;
+        _nextid = 1;
+    }
+
+    public bool WorkerDatabaseIsEmpty()
+    {
+        return _workerDb.Count == 0;
+    }
+    
+    public bool DepartmentDatabaseIsEmpty()
+    {
+        return _departmentDb.Count == 0;
     }
     
     // Returnerer arbejderen med det efterspurgte id
@@ -124,8 +134,8 @@ public class DatabaseManager
     {
         // |- TILFØJ TIL MEDARBEJDERDATABASEN
         // Sæt 
-        _workerDb[_counter] = worker;
-        worker.Id = _counter;
+        _workerDb[_nextid] = worker;
+        worker.Id = _nextid;
         // TILFØJ TIL MEDARBEJDERDATABASEN -|
         
         // |- TILFØJ TIL AFDELINGSDATABASEN
@@ -142,7 +152,7 @@ public class DatabaseManager
         // TILFØJ TIL AFDELINGSDATABASEN -|
         
         // Opdater id-tælleren.
-        _counter++;
+        _nextid++;
     }
     
     // Fjern en medarbejder med id
